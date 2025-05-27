@@ -643,11 +643,17 @@ protected:
     }
     virtual int default_process_response_received_run(string_t& response, xos::network::sockets::interface& cn, int argc, char_t** argv, char_t** env) {
         int err = 0;
-        LOGGER_IS_LOGGED_INFO("(!(err = this->all_output_response_run(\"" << response << "\", argc, argv, env)))...");
+        /*LOGGER_IS_LOGGED_INFO("(!(err = this->all_output_response_run(\"" << response << "\", argc, argv, env)))...");
         if (!(err = this->all_output_response_run(response, argc, argv, env))) {
             LOGGER_IS_LOGGED_INFO("...(!(" << err << " = this->all_output_response_run(\"" << response << "\", argc, argv, env)))");
         } else {
             LOGGER_IS_LOGGED_INFO("...failed on (!(" << err << " = this->all_output_response_run(\"" << response << "\", argc, argv, env)))");
+        }*/
+        LOGGER_IS_LOGGED_INFO("(!(err = this->all_process_response_run(\"" << response << "\", argc, argv, env)))...");
+        if (!(err = this->all_process_response_run(response, argc, argv, env))) {
+            LOGGER_IS_LOGGED_INFO("...(!(" << err << " = this->all_process_response_run(\"" << response << "\", argc, argv, env)))");
+        } else {
+            LOGGER_IS_LOGGED_INFO("...failed on (!(" << err << " = this->all_process_response_run(\"" << response << "\", argc, argv, env)))");
         }
         return err;
     }
@@ -1478,23 +1484,6 @@ protected:
     /// ...cr_prepare_message_received_run
     virtual int cr_prepare_message_received_run(string_t& r, char_t& c, xos::network::sockets::interface& cn, int argc, char_t** argv, char_t** env) {
         int err = 0;
-        const string_t& endof_message = this->cr_endof_message();
-        size_t endof_length = endof_message.length(), length = 0;
-        const char_t* chars = 0;
-        if ((chars = r.has_chars(length)) && (length >= endof_length)) {
-            const string_t prepare(r);
-            if ((chars = prepare.has_chars(length)) && (length >= endof_length)) {
-                r.assign(chars, (length-endof_length));
-            } else {
-            }
-        } else {
-        }
-        LOGGER_IS_LOGGED_INFO("(!(err = unset_prepare_message_received_run(argc, argv, env)))...");
-        if (!(err = unset_prepare_message_received_run(argc, argv, env))) {            
-            LOGGER_IS_LOGGED_INFO("...(!(" << err << " = unset_prepare_message_received_run(argc, argv, env)))");
-        } else {
-            LOGGER_IS_LOGGED_INFO("...failed on (!(" << err << " = unset_prepare_message_received_run(argc, argv, env)))");
-        }
         return err;
     }
     virtual int set_cr_prepare_message_received_run(int argc, char_t** argv, char_t** env) {
@@ -1517,52 +1506,12 @@ protected:
     }
     //////////////////////////////////////////////////////////////////////////
     /// ...receive_cr
-    /// ...<cr>
-    /// ...on_recv_cr
     virtual int on_recv_cr(string_t& r, char_t& c, xos::network::sockets::interface& cn, int argc, char_t** argv, char_t** env) {
         int err = 0;
-        LOGGER_IS_LOGGED_INFO("(!(err = set_cr_prepare_message_received_run(argc, argv, env)))...");
-        if (!(err = set_cr_prepare_message_received_run(argc, argv, env))) {            
-            LOGGER_IS_LOGGED_INFO("...(!(" << err << " = set_cr_prepare_message_received_run(argc, argv, env)))");
-        } else {
-            LOGGER_IS_LOGGED_INFO("...failed on (!(" << err << " = set_cr_prepare_message_received_run(argc, argv, env)))");
-        }
         return err;
     }
     virtual int receive_cr(string_t& r, char_t& c, xos::network::sockets::interface& cn, int argc, char_t** argv, char_t** env) {
         int err = 0;
-        ssize_t amount = 0, count = 0;
-        while (0 < (amount = cn.recv(&c, 1))) {
-            switch (c) {
-            case '\r':
-                LOGGER_IS_LOGGED_INFO("...case '\\r':");
-                LOGGER_IS_LOGGED_INFO("r.append('\\r', 1)...");
-                r.append(&c, 1);
-                LOGGER_IS_LOGGED_INFO("(!(err = on_recv_cr(\"" << r << "\", '\\r', cn, argc, argv, env)))...");
-                if (!(err = on_recv_cr(r, c, cn, argc, argv, env))) {
-                    LOGGER_IS_LOGGED_INFO("...(!(" << err << " = on_recv_cr(\"" << r << "\", '\\r', cn, argc, argv, env)))");
-                } else {
-                    LOGGER_IS_LOGGED_INFO("...failed on (!(" << err << " = on_recv_cr(\"" << r << "\", '\\r', cn, argc, argv, env)))");
-                }
-                return err;
-                break;
-            case '\n':
-                LOGGER_IS_LOGGED_INFO("...case '\\n':");
-                LOGGER_IS_LOGGED_INFO("(0 < (count = " << count << "))...");
-                if (0 < (count)) {
-                    LOGGER_IS_LOGGED_INFO("...(0 < (count = " << count << "))");
-                    LOGGER_IS_LOGGED_INFO("r.append('\\n', 1)...");
-                    r.append(&c, 1);
-                } else {
-                    LOGGER_IS_LOGGED_INFO("...failed on (0 < (count = " << count << "))");
-                }
-                break;
-            default:
-                r.append(&c, 1);
-                break;
-            }
-            count += amount;
-        }
         return err;
     }
     virtual int before_receive_cr(string_t& r, char_t& c, xos::network::sockets::interface& cn, int argc, char_t** argv, char_t** env) {
@@ -1579,6 +1528,59 @@ protected:
             int err2 = 0;
             err = receive_cr(r, c, cn, argc, argv, env);
             if ((err2 = after_receive_cr(r, c, cn, argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    /// ...lf_prepare_message_received_run
+    virtual int lf_prepare_message_received_run(string_t& r, char_t& c, xos::network::sockets::interface& cn, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int set_lf_prepare_message_received_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        prepare_message_received_run_ = &derives::lf_prepare_message_received_run;
+        return err;
+    }
+    virtual int lf_prepare_message_received_run_set(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int unset_lf_prepare_message_received_run(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        prepare_message_received_run_ = 0;
+        return err;
+    }
+    virtual int lf_prepare_message_received_run_unset(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    /// ...receive_lf
+    virtual int on_recv_lf(string_t& r, char_t& c, xos::network::sockets::interface& cn, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int receive_lf(string_t& r, char_t& c, xos::network::sockets::interface& cn, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int before_receive_lf(string_t& r, char_t& c, xos::network::sockets::interface& cn, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_receive_lf(string_t& r, char_t& c, xos::network::sockets::interface& cn, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_receive_lf(string_t& r, char_t& c, xos::network::sockets::interface& cn, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_receive_lf(r, c, cn, argc, argv, env))) {
+            int err2 = 0;
+            err = receive_lf(r, c, cn, argc, argv, env);
+            if ((err2 = after_receive_lf(r, c, cn, argc, argv, env))) {
                 if (!(err)) err = err2;
             }
         }
@@ -1609,6 +1611,35 @@ protected:
         return err;
     }
     //////////////////////////////////////////////////////////////////////////
+    /// ...receive_crlf
+    virtual int on_recv_crlf(string_t& r, char_t& c, xos::network::sockets::interface& cn, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int receive_crlf(string_t& r, char_t& c, xos::network::sockets::interface& cn, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int before_receive_crlf(string_t& r, char_t& c, xos::network::sockets::interface& cn, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_receive_crlf(string_t& r, char_t& c, xos::network::sockets::interface& cn, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_receive_crlf(string_t& r, char_t& c, xos::network::sockets::interface& cn, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_receive_crlf(r, c, cn, argc, argv, env))) {
+            int err2 = 0;
+            err = receive_crlf(r, c, cn, argc, argv, env);
+            if ((err2 = after_receive_crlf(r, c, cn, argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
+        return err;
+    }
+    //////////////////////////////////////////////////////////////////////////
     /// ...crlf2_prepare_message_received_run
     virtual int crlf2_prepare_message_received_run(string_t& r, char_t& c, xos::network::sockets::interface& cn, int argc, char_t** argv, char_t** env) {
         int err = 0;
@@ -1630,6 +1661,35 @@ protected:
     }
     virtual int crlf2_prepare_message_received_run_unset(int argc, char_t** argv, char_t** env) {
         int err = 0;
+        return err;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    /// ...receive_crlf2
+    virtual int on_recv_crlf2(string_t& r, char_t& c, xos::network::sockets::interface& cn, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int receive_crlf2(string_t& r, char_t& c, xos::network::sockets::interface& cn, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int before_receive_crlf2(string_t& r, char_t& c, xos::network::sockets::interface& cn, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int after_receive_crlf2(string_t& r, char_t& c, xos::network::sockets::interface& cn, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int all_receive_crlf2(string_t& r, char_t& c, xos::network::sockets::interface& cn, int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        if (!(err = before_receive_crlf2(r, c, cn, argc, argv, env))) {
+            int err2 = 0;
+            err = receive_crlf2(r, c, cn, argc, argv, env);
+            if ((err2 = after_receive_crlf2(r, c, cn, argc, argv, env))) {
+                if (!(err)) err = err2;
+            }
+        }
         return err;
     }
     //////////////////////////////////////////////////////////////////////////

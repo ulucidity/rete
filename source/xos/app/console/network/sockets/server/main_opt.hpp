@@ -174,6 +174,12 @@ protected:
         LOGGER_IS_LOGGED_INFO("(!(err = this->set_accept_run(argc, argv, env)))...");
         if (!(err = this->set_accept_run(argc, argv, env))) {
             LOGGER_IS_LOGGED_INFO("...(!(" << err << " = this->set_accept_run(argc, argv, env)))");
+            LOGGER_IS_LOGGED_INFO("(!(err = this->accept_run_set(argc, argv, env)))...");
+            if (!(err = this->accept_run_set(argc, argv, env))) {
+                LOGGER_IS_LOGGED_INFO("...(!(" << err << " = this->accept_run_set(argc, argv, env)))");
+            } else {
+                LOGGER_IS_LOGGED_INFO("...failed on (!(" << err << " = this->accept_run_set(argc, argv, env)))");
+            }
         } else {
             LOGGER_IS_LOGGED_INFO("...failed on (!(" << err << " = this->set_accept_run(argc, argv, env)))");
         }
@@ -194,6 +200,12 @@ protected:
             LOGGER_IS_LOGGED_INFO("(!(err = this->set_accept_run(argc, argv, env)))...");
             if (!(err = this->set_accept_run(argc, argv, env))) {
                 LOGGER_IS_LOGGED_INFO("...(!(" << err << " = this->set_accept_run(argc, argv, env)))");
+                LOGGER_IS_LOGGED_INFO("(!(err = this->accept_run_set(argc, argv, env)))...");
+                if (!(err = this->accept_run_set(argc, argv, env))) {
+                    LOGGER_IS_LOGGED_INFO("...(!(" << err << " = this->accept_run_set(argc, argv, env)))");
+                } else {
+                    LOGGER_IS_LOGGED_INFO("...failed on (!(" << err << " = this->accept_run_set(argc, argv, env)))");
+                }
             } else {
                 LOGGER_IS_LOGGED_INFO("...failed on (!(" << err << " = this->set_accept_run(argc, argv, env)))");
             }
@@ -240,6 +252,12 @@ protected:
         LOGGER_IS_LOGGED_INFO("(!(err = this->set_accept_one_run(argc, argv, env)))...");
         if (!(err = this->set_accept_one_run(argc, argv, env))) {
             LOGGER_IS_LOGGED_INFO("...(!(" << err << " = this->set_accept_one_run(argc, argv, env)))");
+            LOGGER_IS_LOGGED_INFO("(!(err = this->accept_one_run_set(argc, argv, env)))...");
+            if (!(err = this->accept_one_run_set(argc, argv, env))) {
+                LOGGER_IS_LOGGED_INFO("...(!(" << err << " = this->accept_one_run_set(argc, argv, env)))");
+            } else {
+                LOGGER_IS_LOGGED_INFO("...failed on (!(" << err << " = this->accept_one_run_set(argc, argv, env)))");
+            }
         } else {
             LOGGER_IS_LOGGED_INFO("...failed on (!(" << err << " = this->set_accept_one_run(argc, argv, env)))");
         }
@@ -260,6 +278,12 @@ protected:
             LOGGER_IS_LOGGED_INFO("(!(err = this->set_accept_one_run(argc, argv, env)))...");
             if (!(err = this->set_accept_one_run(argc, argv, env))) {
                 LOGGER_IS_LOGGED_INFO("...(!(" << err << " = this->set_accept_one_run(argc, argv, env)))");
+                LOGGER_IS_LOGGED_INFO("(!(err = this->accept_one_run_set(argc, argv, env)))...");
+                if (!(err = this->accept_one_run_set(argc, argv, env))) {
+                    LOGGER_IS_LOGGED_INFO("...(!(" << err << " = this->accept_one_run_set(argc, argv, env)))");
+                } else {
+                    LOGGER_IS_LOGGED_INFO("...failed on (!(" << err << " = this->accept_one_run_set(argc, argv, env)))");
+                }
             } else {
                 LOGGER_IS_LOGGED_INFO("...failed on (!(" << err << " = this->set_accept_one_run(argc, argv, env)))");
             }

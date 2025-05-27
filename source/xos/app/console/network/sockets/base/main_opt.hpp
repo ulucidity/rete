@@ -16,13 +16,13 @@
 ///   File: main_opt.hpp
 ///
 /// Author: $author$
-///   Date: 3/10/2025
+///   Date: 3/10/2025, 5/16/2025
 //////////////////////////////////////////////////////////////////////////
 #ifndef XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_OPT_HPP
 #define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_OPT_HPP
 
 #include "xos/app/console/network/base/main.hpp"
-#include "xos/app/console/protocol/ttp/base/main.hpp"
+#include "xos/app/console/protocol/crlf/base/main.hpp"
 
 #define XOS_APP_CONSOLE_NETWORK_SOCKETS_ACCEPT_HOST "*"
 #define XOS_APP_CONSOLE_NETWORK_SOCKETS_ACCEPT_PORT 8080
@@ -94,14 +94,29 @@
     XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_RELAY_PORT_OPTARG_RESULT, \
     XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_RELAY_PORT_OPTVAL_C}, \
 
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_PROTOCOL_BASE_MAIN_CRLF2_OPT "crlf2"
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_PROTOCOL_BASE_MAIN_CRLF2_OPTARG_REQUIRED MAIN_OPT_ARGUMENT_OPTIONAL
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_PROTOCOL_BASE_MAIN_CRLF2_OPTARG_RESULT 0
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_PROTOCOL_BASE_MAIN_CRLF2_OPTARG XOS_APP_CONSOLE_MAIN_OPTARG_ONOFF_OPTIONAL
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_PROTOCOL_BASE_MAIN_CRLF2_OPTUSE "send crlf2 endof message"
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_PROTOCOL_BASE_MAIN_CRLF2_OPTVAL_S "2::"
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_PROTOCOL_BASE_MAIN_CRLF2_OPTVAL_C '2'
+#define XOS_APP_CONSOLE_NETWORK_SOCKETS_PROTOCOL_BASE_MAIN_CRLF2_OPTION \
+   {XOS_APP_CONSOLE_NETWORK_SOCKETS_PROTOCOL_BASE_MAIN_CRLF2_OPT, \
+    XOS_APP_CONSOLE_NETWORK_SOCKETS_PROTOCOL_BASE_MAIN_CRLF2_OPTARG_REQUIRED, \
+    XOS_APP_CONSOLE_NETWORK_SOCKETS_PROTOCOL_BASE_MAIN_CRLF2_OPTARG_RESULT, \
+    XOS_APP_CONSOLE_NETWORK_SOCKETS_PROTOCOL_BASE_MAIN_CRLF2_OPTVAL_C}, \
+
 ///////////////////////////////////////////////////////////////////////
 #define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_CLIENT_OPTIONS_CHARS_EXTEND \
     XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_HOST_OPTVAL_S \
     XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_PORT_OPTVAL_S \
+    XOS_APP_CONSOLE_NETWORK_SOCKETS_PROTOCOL_BASE_MAIN_CRLF2_OPTVAL_S \
 
 #define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_CLIENT_OPTIONS_OPTIONS_EXTEND \
     XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_HOST_OPTION \
     XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_PORT_OPTION \
+    XOS_APP_CONSOLE_NETWORK_SOCKETS_PROTOCOL_BASE_MAIN_CRLF2_OPTION \
 
 ///////////////////////////////////////////////////////////////////////
 #define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_OPTIONS_CHARS_EXTEND \
@@ -109,12 +124,14 @@
     XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_PORT_OPTVAL_S \
     XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_RELAY_HOST_OPTVAL_S \
     XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_RELAY_PORT_OPTVAL_S \
+    XOS_APP_CONSOLE_NETWORK_SOCKETS_PROTOCOL_BASE_MAIN_CRLF2_OPTVAL_S \
 
 #define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_OPTIONS_OPTIONS_EXTEND \
     XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_HOST_OPTION \
     XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_PORT_OPTION \
     XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_RELAY_HOST_OPTION \
     XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_RELAY_PORT_OPTION \
+    XOS_APP_CONSOLE_NETWORK_SOCKETS_PROTOCOL_BASE_MAIN_CRLF2_OPTION \
 
 ///////////////////////////////////////////////////////////////////////
 #define XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_OPTIONS_CHARS \
@@ -140,8 +157,8 @@ namespace base {
 template 
 <class TExtends = xos::app::console::network::base::maint
  <xos::app::console::network::base::main_optt
- <xos::app::console::protocol::ttp::base::maint
- <xos::app::console::protocol::ttp::base::main_optt
+ <xos::app::console::protocol::crlf::base::maint
+ <xos::app::console::protocol::crlf::base::main_optt
  <xos::app::console::protocol::base::maint
  <xos::app::console::protocol::base::main_optt<> > > > > >,  class TImplements = typename TExtends::implements>
 
@@ -560,8 +577,8 @@ protected:
     }
     virtual int set_accept_one_run(int argc, char_t** argv, char_t** env) {
         int err = 0;
-        if (!(err = set_sockets_run(argc, argv, env))) {
-            if (!(err = sockets_run_set(argc, argv, env))) {
+        if (!(err = set_sockets_server_run(argc, argv, env))) {
+            if (!(err = sockets_server_run_set(argc, argv, env))) {
                 sockets_run_ = &derives::all_accept_one_run;
             } else {
             }
@@ -1133,6 +1150,72 @@ protected:
         return chars;
     }
     //////////////////////////////////////////////////////////////////////////
+    /// on...crlf2_option...
+    virtual int on_get_crlf2_option
+    (const char_t* optarg, int optind, int argc, char_t**argv, char_t**env) {
+        int err = 0;
+        return err;
+    }
+    virtual int on_crlf2_option_get
+    (const char_t* optarg, int optind, int argc, char_t**argv, char_t**env) {
+        int err = 0;
+        if (!(err = set_crlf2_endof_message_to_send(argc, argv, env))) {
+            if (!(err = crlf2_endof_message_to_send_set(argc, argv, env))) {
+            } else {
+            }
+        } else {
+        }
+        return err;
+    }
+    virtual int on_set_crlf2_option
+    (const char_t* optarg, int optind, int argc, char_t**argv, char_t**env) {
+        int err = 0;
+        if ((optarg) && (optarg[0])) {
+        } else {
+        }
+        return err;
+    }
+    virtual int on_crlf2_option_set
+    (const char_t* optarg, int optind, int argc, char_t**argv, char_t**env) {
+        int err = 0;
+        if ((optarg) && (optarg[0])) {
+            if (!(err = set_crlf_endof_message_to_send(argc, argv, env))) {
+                if (!(err = crlf_endof_message_to_send_set(argc, argv, env))) {
+                } else {
+                }
+            } else {
+            }
+        } else {
+        }
+        return err;
+    }
+    virtual int on_crlf2_option
+    (int optval, const char_t* optarg, const char_t* optname,
+     int optind, int argc, char_t**argv, char_t**env) {
+        int err = 0;
+        if ((optarg) && (optarg[0])) {
+            if (!(err = on_set_crlf2_option(optarg, optind, argc, argv, env))) {
+                if (!(err = on_crlf2_option_set(optarg, optind, argc, argv, env))) {
+                } else {
+                }
+            } else {
+            }
+        } else {
+            if (!(err = on_get_crlf2_option(optarg, optind, argc, argv, env))) {
+                if (!(err = on_crlf2_option_get(optarg, optind, argc, argv, env))) {
+                } else {
+                }
+            } else {
+            }
+        }
+        return err;
+    }
+    virtual const char_t* crlf2_option_usage(const char_t*& optarg, const struct option* longopt) {
+        const char_t* chars = XOS_APP_CONSOLE_NETWORK_SOCKETS_PROTOCOL_BASE_MAIN_CRLF2_OPTUSE;
+        optarg = XOS_APP_CONSOLE_NETWORK_SOCKETS_PROTOCOL_BASE_MAIN_CRLF2_OPTARG;
+        return chars;
+    }
+    //////////////////////////////////////////////////////////////////////////
 
     //////////////////////////////////////////////////////////////////////////
     /// on_option
@@ -1153,6 +1236,9 @@ protected:
             break;
         case XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_RELAY_PORT_OPTVAL_C:
             err = this->on_relay_port_option(optval, optarg, optname, optind, argc, argv, env);
+            break;
+        case XOS_APP_CONSOLE_NETWORK_SOCKETS_PROTOCOL_BASE_MAIN_CRLF2_OPTVAL_C:
+            err = this->on_crlf2_option(optval, optarg, optname, optind, argc, argv, env);
             break;
 
         default:
@@ -1177,6 +1263,9 @@ protected:
             break;
         case XOS_APP_CONSOLE_NETWORK_SOCKETS_BASE_MAIN_RELAY_PORT_OPTVAL_C:
             chars = this->relay_port_option_usage(optarg, longopt);
+            break;
+        case XOS_APP_CONSOLE_NETWORK_SOCKETS_PROTOCOL_BASE_MAIN_CRLF2_OPTVAL_C:
+            chars = this->crlf2_option_usage(optarg, longopt);
             break;
 
         default:
@@ -1203,6 +1292,156 @@ protected:
             0};
         argv = _argv;
         return _args;
+    }
+    //////////////////////////////////////////////////////////////////////////
+
+    //////////////////////////////////////////////////////////////////////////
+    /// ...endof_message_to_send
+    const string_t& (derives::*endof_message_to_send_)() const;
+    virtual const string_t& endof_message_to_send() const {
+        if (endof_message_to_send_) {
+            LOGGER_IS_LOGGED_INFO("(this->*endof_message_to_send_)()...");
+            return (this->*endof_message_to_send_)();
+        } else {
+            LOGGER_IS_LOGGED_INFO("return default_endof_message_to_send()...");
+            return default_endof_message_to_send();
+        }
+        LOGGER_IS_LOGGED_INFO("return default_endof_message_to_send()...");
+        return default_endof_message_to_send();
+    }
+    virtual const string_t& default_endof_message_to_send() const {
+        const string_t& endof_message = this->crlf_endof_message();
+        LOGGER_IS_LOGGED_INFO("(!(endof_message = extends::run(argc, argv, env)))...");
+        return endof_message;
+    }
+    virtual int unset_endof_message_to_send(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        endof_message_to_send_ = 0;
+        return err;
+    }
+    virtual int endof_message_to_send_unset(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    /// ...crlf2_endof_message_to_send
+    virtual const string_t& crlf2_endof_message_to_send() const {
+        const string_t& endof_message = this->crlf2_endof_message();
+        return endof_message;
+    }
+    virtual int set_crlf2_endof_message_to_send(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        endof_message_to_send_ = &derives::crlf2_endof_message_to_send;
+        return err;
+    }
+    virtual int crlf2_endof_message_to_send_set(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int unset_crlf2_endof_message_to_send(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        endof_message_to_send_ = 0;
+        return err;
+    }
+    virtual int crlf2_endof_message_to_send_unset(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    /// ...crlf_endof_message_to_send
+    virtual const string_t& crlf_endof_message_to_send() const {
+        const string_t& endof_message = this->crlf_endof_message();
+        return endof_message;
+    }
+    virtual int set_crlf_endof_message_to_send(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        endof_message_to_send_ = &derives::crlf_endof_message_to_send;
+        return err;
+    }
+    virtual int crlf_endof_message_to_send_set(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int unset_crlf_endof_message_to_send(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        endof_message_to_send_ = 0;
+        return err;
+    }
+    virtual int crlf_endof_message_to_send_unset(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    /// ...cr_endof_message_to_send
+    virtual const string_t& cr_endof_message_to_send() const {
+        const string_t& endof_message = this->cr_endof_message();
+        return endof_message;
+    }
+    virtual int set_cr_endof_message_to_send(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        endof_message_to_send_ = &derives::cr_endof_message_to_send;
+        return err;
+    }
+    virtual int cr_endof_message_to_send_set(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int unset_cr_endof_message_to_send(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        endof_message_to_send_ = 0;
+        return err;
+    }
+    virtual int cr_endof_message_to_send_unset(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    /// ...lf_endof_message_to_send
+    virtual const string_t& lf_endof_message_to_send() const {
+        const string_t& endof_message = this->lf_endof_message();
+        return endof_message;
+    }
+    virtual int set_lf_endof_message_to_send(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        endof_message_to_send_ = &derives::lf_endof_message_to_send;
+        return err;
+    }
+    virtual int lf_endof_message_to_send_set(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int unset_lf_endof_message_to_send(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        endof_message_to_send_ = 0;
+        return err;
+    }
+    virtual int lf_endof_message_to_send_unset(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    /// ...no_endof_message_to_send
+    virtual const string_t& no_endof_message_to_send() const {
+        const string_t& endof_message = this->no_endof_message();
+        return endof_message;
+    }
+    virtual int set_no_endof_message_to_send(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        endof_message_to_send_ = &derives::no_endof_message_to_send;
+        return err;
+    }
+    virtual int no_endof_message_to_send_set(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
+    }
+    virtual int unset_no_endof_message_to_send(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        endof_message_to_send_ = 0;
+        return err;
+    }
+    virtual int no_endof_message_to_send_unset(int argc, char_t** argv, char_t** env) {
+        int err = 0;
+        return err;
     }
     //////////////////////////////////////////////////////////////////////////
 
